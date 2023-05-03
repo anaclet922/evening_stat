@@ -43,6 +43,8 @@ dependencies:
   transparent_image: ^2.0.1
   intl: ^0.18.1
   another_flushbar: ^1.12.29
+  syncfusion_flutter_sliders: ^21.2.3
+  syncfusion_flutter_core: ^21.2.3
 
 dev_dependencies:
   flutter_test:

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:evening_stat/components/night-options/statistics.dart';
 import 'package:evening_stat/models/head_two_head_model.dart';
 import 'package:evening_stat/models/over_model.dart';
 import 'package:evening_stat/models/postion_model.dart';
@@ -477,7 +478,7 @@ class MainApi with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getStatisticsData(String leagueId, String gameId) async {
+  Future<void> getStatisticsData(context, String leagueId, String gameId) async {
     _apiState = ApiState.loading;
     try {
       final response = await http.get(
@@ -532,18 +533,18 @@ class MainApi with ChangeNotifier {
           responseArray['results'][0]['scores']['4']['away']
         ];
         statistics.p2Points =
-        (responseArray['results'][0]['stats']['2points'] ?? ['n/a', 'n/a'])  as List<String>;
+        responseArray['results'][0]['stats']['2points'] ?? ['n/a', 'n/a'];
         statistics.p3Points =
-        (responseArray['results'][0]['stats']['2points'] ?? ['n/a', 'n/a'])  as List<String>;
+        responseArray['results'][0]['stats']['2points'] ?? ['n/a', 'n/a'];
         statistics.biggestLead = [];
         statistics.fouls =
-        (responseArray['results'][0]['stats']['fouls'] ?? ['n/a', 'n/a'])  as List<String>;
-        statistics.freeThrows = (responseArray['results'][0]['stats']
+        responseArray['results'][0]['stats']['fouls'] ?? ['n/a', 'n/a'];
+        statistics.freeThrows = responseArray['results'][0]['stats']
                 ['free_throws'] ??
-            ['n/a', 'n/a'])  as List<String>;
-        statistics.freeThrowsRate = (responseArray['results'][0]['stats']
+            ['n/a', 'n/a'];
+        statistics.freeThrowsRate = responseArray['results'][0]['stats']
                 ['free_throws_rate'] ??
-            ['n/a', 'n/a'])  as List<String>;
+            ['n/a', 'n/a'];
         statistics.leadChanges = [];
         statistics.maxPointsInARow = [];
         statistics.possession = [];
@@ -553,6 +554,16 @@ class MainApi with ChangeNotifier {
 
         // print(statistics);
         _apiState = ApiState.loaded;
+
+
+        Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      Statistics(
+                          leagueId,
+                          gameId)));
+
       } else {
         // If the server did not return a 201 CREATED response,
         // then throw an exception.
@@ -630,4 +641,6 @@ class MainApi with ChangeNotifier {
     notifyListeners();
 
   }
+
+  // Future<void> openStatistics()
 }

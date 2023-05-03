@@ -17,7 +17,7 @@ class _StatisticsState extends State<Statistics> {
   @override
   void initState() {
     super.initState();
-    Provider.of<MainApi>(context, listen: false).getStatisticsData(widget.leagueId, widget.gameId);
+    // Provider.of<MainApi>(context, listen: false).getStatisticsData(widget.leagueId, widget.gameId);
   }
 
   @override
@@ -39,13 +39,7 @@ class _StatisticsState extends State<Statistics> {
             ),
           )
       ),
-      body: context.watch<MainApi>().apiState == ApiState.loading
-          ? const Center(
-        child: CircularProgressIndicator(
-          color: primaryLightColor,
-        ),
-      )
-          : Column(
+      body: Column(
         children: [
           Container(
             height: 150,
@@ -247,7 +241,7 @@ class _StatisticsState extends State<Statistics> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    context.watch<MainApi>().statistics.p2Points.asMap().containsKey(0) ? context.watch<MainApi>().statistics.p2Points[0] : '',
+                                    context.watch<MainApi>().statistics.p2Points![0] ?? '',
                                     style: const TextStyle(fontSize: 16, color: whiteColor),),
                                   Container(
                                     padding: const EdgeInsets.only(bottom: 10),
@@ -261,7 +255,7 @@ class _StatisticsState extends State<Statistics> {
                                     child: const Text('2 points', style: TextStyle(fontSize: 16, color: whiteColor)),
                                   ),
                                   Text(
-                                    context.watch<MainApi>().statistics.p2Points.asMap().containsKey(1) ? context.watch<MainApi>().statistics.p2Points[1] : '',
+                                    context.watch<MainApi>().statistics.p2Points![1] ?? '',
                                     style: const TextStyle(fontSize: 16, color: whiteColor),),
                                 ],
                               ),
@@ -272,7 +266,7 @@ class _StatisticsState extends State<Statistics> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    context.watch<MainApi>().statistics.p3Points.asMap().containsKey(0) ? context.watch<MainApi>().statistics.p3Points[0] : '',
+                                    context.watch<MainApi>().statistics.p3Points![0] ?? '',
                                     style: const TextStyle(fontSize: 16, color: whiteColor),),
                                   Container(
                                     padding: const EdgeInsets.only(bottom: 10),
@@ -286,7 +280,7 @@ class _StatisticsState extends State<Statistics> {
                                     child: const Text('3 points', style: TextStyle(fontSize: 16, color: whiteColor)),
                                   ),
                                   Text(
-                                    context.watch<MainApi>().statistics.p3Points.asMap().containsKey(1) ? context.watch<MainApi>().statistics.p3Points[1] : '',
+                                    context.watch<MainApi>().statistics.p3Points![1] ?? '',
                                     style: const TextStyle(fontSize: 16, color: whiteColor),),
                                 ],
                               ),
@@ -297,7 +291,7 @@ class _StatisticsState extends State<Statistics> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    context.watch<MainApi>().statistics.fouls.asMap().containsKey(0) ? context.watch<MainApi>().statistics.fouls[0] : '',
+                                    context.watch<MainApi>().statistics.fouls![0] ?? '',
                                     style: const TextStyle(fontSize: 16, color: whiteColor),),
                                   Container(
                                     padding: const EdgeInsets.only(bottom: 10),
@@ -311,7 +305,7 @@ class _StatisticsState extends State<Statistics> {
                                     child: const Text('Fouls', style: TextStyle(fontSize: 16, color: whiteColor)),
                                   ),
                                   Text(
-                                    context.watch<MainApi>().statistics.fouls.asMap().containsKey(1) ? context.watch<MainApi>().statistics.fouls[1] : '',
+                                    context.watch<MainApi>().statistics.fouls![1] ?? '',
                                     style: const TextStyle(fontSize: 16, color: whiteColor),),
                                 ],
                               ),
@@ -324,7 +318,7 @@ class _StatisticsState extends State<Statistics> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    context.watch<MainApi>().statistics.freeThrows.asMap().containsKey(0) ? context.watch<MainApi>().statistics.freeThrows[0] : '',
+                                    context.watch<MainApi>().statistics.freeThrows![0] ?? '',
                                     style: const TextStyle(fontSize: 16, color: whiteColor),),
                                   Container(
                                     padding: const EdgeInsets.only(bottom: 10),
@@ -338,7 +332,7 @@ class _StatisticsState extends State<Statistics> {
                                     child: const Text('Free throws', style: TextStyle(fontSize: 16, color: whiteColor)),
                                   ),
                                   Text(
-                                    context.watch<MainApi>().statistics.freeThrows.asMap().containsKey(1) ? context.watch<MainApi>().statistics.freeThrows[1] : '',
+                                    context.watch<MainApi>().statistics.freeThrows![1] ?? '',
                                     style: const TextStyle(fontSize: 16, color: whiteColor),),
                                 ],
                               ),
@@ -351,7 +345,7 @@ class _StatisticsState extends State<Statistics> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    context.watch<MainApi>().statistics.freeThrowsRate.asMap().containsKey(0) ? context.watch<MainApi>().statistics.freeThrowsRate[0] : '',
+                                    context.watch<MainApi>().statistics.freeThrowsRate![0] ?? '',
                                     style: const TextStyle(fontSize: 16, color: whiteColor),),
                                   Container(
                                     padding: const EdgeInsets.only(bottom: 10),
@@ -365,7 +359,7 @@ class _StatisticsState extends State<Statistics> {
                                     child: const Text('Free throws rate', style: TextStyle(fontSize: 16, color: whiteColor)),
                                   ),
                                   Text(
-                                    context.watch<MainApi>().statistics.freeThrowsRate.asMap().containsKey(1) ? context.watch<MainApi>().statistics.freeThrowsRate[1] : '',
+                                    context.watch<MainApi>().statistics.freeThrowsRate![1] ?? '',
                                     style: const TextStyle(fontSize: 16, color: whiteColor),),
                                 ],
                               ),
@@ -377,7 +371,7 @@ class _StatisticsState extends State<Statistics> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    context.watch<MainApi>().statistics.timeOuts.asMap().containsKey(0) ? context.watch<MainApi>().statistics.timeOuts[0] : '',
+                                    context.watch<MainApi>().statistics.timeOuts![0] ?? '',
                                     style: const TextStyle(fontSize: 16, color: whiteColor),),
                                   Container(
                                     padding: const EdgeInsets.only(bottom: 10),
@@ -391,7 +385,7 @@ class _StatisticsState extends State<Statistics> {
                                     child: const Text('Time outs', style: TextStyle(fontSize: 16, color: whiteColor)),
                                   ),
                                   Text(
-                                    context.watch<MainApi>().statistics.timeOuts.asMap().containsKey(1) ? context.watch<MainApi>().statistics.timeOuts[1] : '',
+                                    context.watch<MainApi>().statistics.timeOuts![1] ?? '',
                                     style: const TextStyle(fontSize: 16, color: whiteColor),),
                                 ],
                               ),

@@ -30,9 +30,11 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+
     if (isSoundOn1 as bool == true) {
       context.read<MySound>().playBackgroundSound();
     }
+    context.read<SaveData>().initSavedData();
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,

@@ -1,12 +1,14 @@
-
 import 'package:evening_stat/models/league_model.dart';
 import 'package:evening_stat/providers/saved_data_provider.dart';
 import 'package:evening_stat/providers/sound_provider.dart';
 import 'package:evening_stat/utilis/constants.dart';
+import 'package:evening_stat/utilis/custom_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:syncfusion_flutter_core/theme.dart';
+import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 class Option extends StatefulWidget {
   const Option({Key? key}) : super(key: key);
@@ -16,7 +18,6 @@ class Option extends StatefulWidget {
 }
 
 class _OptionState extends State<Option> {
-
   final List<LeagueModel> leagueItems = [
     LeagueModel(id: 1328, leagueName: 'British Basketball League'),
     LeagueModel(id: 1923, leagueName: 'Euroleague'),
@@ -41,20 +42,23 @@ class _OptionState extends State<Option> {
   // ignore: unused_field
   String? _sliderStatus;
 
-
-  void initVars(){
-    if(Provider.of<SaveData>(context, listen: false).leagueSaved > 14){
-      for(int i = 0; i < leagueItems.length; i++){
-        if(leagueItems[i].id == Provider.of<SaveData>(context, listen: false).leagueSaved){
+  void initVars() {
+    if (Provider.of<SaveData>(context, listen: false).leagueSaved > 14) {
+      for (int i = 0; i < leagueItems.length; i++) {
+        if (leagueItems[i].id ==
+            Provider.of<SaveData>(context, listen: false).leagueSaved) {
           selectedLeague = leagueItems[i];
           break;
         }
       }
-    }else{
-      selectedLeague = leagueItems[Provider.of<SaveData>(context, listen: false).leagueSaved];
+    } else {
+      selectedLeague = leagueItems[
+          Provider.of<SaveData>(context, listen: false).leagueSaved];
     }
     soundOn = Provider.of<SaveData>(context, listen: false).soundSaved;
-    currentSliderValue = Provider.of<SaveData>(context, listen: false).currentSliderValue.toDouble();
+    currentSliderValue = Provider.of<SaveData>(context, listen: false)
+        .currentSliderValue
+        .toDouble();
   }
 
   @override
@@ -62,6 +66,37 @@ class _OptionState extends State<Option> {
     initVars();
     super.initState();
   }
+
+  double value = 1;
+  double actualValue = 1;
+  double minValue = 1;
+  double maxValue = 24;
+  List<double> steps = [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -117,8 +152,7 @@ class _OptionState extends State<Option> {
                                     },
                                     child: Container(
                                       padding: const EdgeInsets.only(
-                                          top: 2,
-                                          bottom: 2.0),
+                                          top: 2, bottom: 2.0),
                                       decoration: BoxDecoration(
                                         gradient: soundOn
                                             ? primaryGradient
@@ -126,14 +160,13 @@ class _OptionState extends State<Option> {
                                         borderRadius: const BorderRadius.all(
                                             Radius.circular(80.0)),
                                       ),
-                                      child:const Center(
-                                        child:  Text(
+                                      child: const Center(
+                                        child: Text(
                                           'On',
                                           style: TextStyle(
                                               fontSize: 12,
                                               color: whiteColor,
-                                            decoration: TextDecoration.none
-                                          ),
+                                              decoration: TextDecoration.none),
                                         ),
                                       ),
                                     )
@@ -160,10 +193,12 @@ class _OptionState extends State<Option> {
                                             Radius.circular(80.0)),
                                       ),
                                       child: const Center(
-                                        child:  Text(
+                                        child: Text(
                                           'Off',
                                           style: TextStyle(
-                                              fontSize: 12, color: whiteColor, decoration: TextDecoration.none),
+                                              fontSize: 12,
+                                              color: whiteColor,
+                                              decoration: TextDecoration.none),
                                         ),
                                       ),
                                     )
@@ -190,47 +225,48 @@ class _OptionState extends State<Option> {
                           Expanded(
                             child: Container(
                               height: 19.0,
-                              margin: const EdgeInsets.only(right: 20.0, left: 20.0),
+                              margin: const EdgeInsets.only(
+                                  right: 20.0, left: 20.0),
                               padding: const EdgeInsets.only(bottom: 2.0),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(22.5),
-                                  gradient: primaryGradient
-                              ),
+                                  gradient: primaryGradient),
                               child: Material(
                                 color: Colors.transparent,
-                                child: SizedBox(
-                                  width: double.infinity,
-                                  child: Center(
-                                    child: DropdownButton(
-                                      borderRadius: BorderRadius.circular(23),
-                                      alignment: AlignmentDirectional.center,
-                                      dropdownColor: primaryColor,
-                                      icon: const SizedBox.shrink(),
-                                      value: selectedLeague,
-                                      items: leagueItems.map((LeagueModel value) {
-                                        return DropdownMenuItem(
-                                           alignment: AlignmentDirectional.bottomCenter,
-                                            value: value,
-                                            child: Text(
-                                              value.leagueName,
-                                              overflow: TextOverflow.ellipsis,
-                                              style:
-                                                  const TextStyle(
-                                                      color: whiteColor,
-                                                    fontSize: 12.0,
-                                                    fontWeight: FontWeight.bold
-                                                  ),
-                                            ));
-                                      }).toList(),
-                                      onChanged: (LeagueModel? newValue) {
-                                        context.read<MySound>().btnPressedSound();
-                                        setState(() {
-                                          selectedLeague = newValue!;
-                                        });
-                                      },
-                                      underline: const SizedBox(),
-                                    ),
-                                  ),
+                                child: DropdownButton(
+                                    isExpanded: true,
+                                  borderRadius: BorderRadius.circular(23),
+                                  alignment: AlignmentDirectional.center,
+                                  dropdownColor: primaryColor,
+                                  icon: const SizedBox.shrink(),
+                                  value: selectedLeague,
+                                  items: leagueItems.map((LeagueModel value) {
+                                    return DropdownMenuItem(
+                                        alignment:
+                                            AlignmentDirectional.center,
+                                        value: value,
+                                        child: SizedBox(
+                                          // color: Colors.deepOrange,
+                                          width: 126,
+                                          child: Text(
+                                            value.leagueName,
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 1,
+                                            softWrap: false,
+                                            style: const TextStyle(
+                                                color: whiteColor,
+                                                fontSize: 12.0,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ));
+                                  }).toList(),
+                                  onChanged: (LeagueModel? newValue) {
+                                    context.read<MySound>().btnPressedSound();
+                                    setState(() {
+                                      selectedLeague = newValue!;
+                                    });
+                                  },
+                                  underline: const SizedBox(),
                                 ),
                               ),
                             ),
@@ -250,7 +286,7 @@ class _OptionState extends State<Option> {
                                 decoration: TextDecoration.none,
                                 fontSize: 16.0),
                           ),
-                           Text(
+                          Text(
                             currentSliderValue.toInt().toString(),
                             style: const TextStyle(
                                 color: whiteColor,
@@ -259,39 +295,81 @@ class _OptionState extends State<Option> {
                           ),
                           SizedBox(
                             width: double.infinity,
-                            child: CupertinoSlider(
-                              key: const Key('slider'),
-                              value: currentSliderValue,
-                              // This allows the slider to jump between divisions.
-                              // If null, the slide movement is continuous.
-                              divisions: 24,
-                              // The maximum slider value
-                              max: 24,
-                              activeColor: primaryColor,
-                              thumbColor: primaryColor,
-                              // This is called when sliding is started.
-                              onChangeStart: (double value) {
-                                setState(() {
-                                  _sliderStatus = 'Sliding';
-                                });
-                              },
-                              // This is called when sliding has ended.
-                              onChangeEnd: (double value) {
-                                setState(() {
-                                  _sliderStatus = 'Finished sliding';
-                                });
-                              },
-                              // This is called when slider value is changed.
-                              onChanged: (double value) {
-                                setState(() {
-                                  currentSliderValue = value;
-                                });
-                              },
+                            child:
+                            // CupertinoSlider(
+                            //   key: const Key('slider'),
+                            //   value: currentSliderValue,
+                            //   // This allows the slider to jump between divisions.
+                            //   // If null, the slide movement is continuous.
+                            //   divisions: 24,
+                            //   // The maximum slider value
+                            //   max: 24,
+                            //   activeColor: primaryColor,
+                            //   thumbColor: primaryColor,
+                            //   // This is called when sliding is started.
+                            //   onChangeStart: (double value) {
+                            //     setState(() {
+                            //       _sliderStatus = 'Sliding';
+                            //     });
+                            //   },
+                            //   // This is called when sliding has ended.
+                            //   onChangeEnd: (double value) {
+                            //     setState(() {
+                            //       _sliderStatus = 'Finished sliding';
+                            //     });
+                            //   },
+                            //   // This is called when slider value is changed.
+                            //   onChanged: (double value) {
+                            //     setState(() {
+                            //       currentSliderValue = value;
+                            //     });
+                            //   },
+                            // ),
+                            SfSliderTheme(
+                              data: SfSliderThemeData(
+                                  activeTrackColor: primaryColor,
+                                  inactiveTrackColor: Colors.white,
+                                  activeLabelStyle:
+                                      const TextStyle(color: Colors.white),
+                                  inactiveLabelStyle:
+                                      const TextStyle(color: Colors.white),
+                                activeTickColor: Colors.white,
+                                inactiveTickColor: Colors.white,
+                                activeTrackHeight: 20,
+                                inactiveTrackHeight: 18,
+
+                              ),
+
+                              child: SizedBox(
+                                width: 200,
+                                height: 200,
+                                child: SfSlider(
+                                  min: 1.0,
+                                  max: 24.0,
+                                  value: 1,
+                                  interval: 2,
+                                  stepSize: 1,
+                                  showTicks: true,
+                                  showLabels: true,
+                                  inactiveColor: Colors.white,
+                                  activeColor: primaryColor,
+                                  enableTooltip: true,
+                                  showDividers: false,
+                                  minorTicksPerInterval: 1,
+                                  onChanged: (dynamic value) {
+                                    setState(() {
+                                      // currentSliderValue = value;
+                                    });
+                                    print(value);
+                                  },
+                                ),
+                              ),
                             ),
                           ),
                         ],
                       ),
                     ),
+
                   ],
                 ),
               ),
@@ -416,9 +494,9 @@ class _OptionState extends State<Option> {
                                 context.read<MySound>().btnPressedSound();
                                 setPersonalizedSettings();
                                 Navigator.of(context).pop();
-                                if(!soundOn){
+                                if (!soundOn) {
                                   context.read<MySound>().stopBackgroundSound();
-                                }else{
+                                } else {
                                   context.read<MySound>().playBackgroundSound();
                                 }
                               },
@@ -546,14 +624,14 @@ class _OptionState extends State<Option> {
     );
   }
 
-  void setDefaultSettings() async{
+  void setDefaultSettings() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('isSoundOn', true);
     prefs.setInt('defaultLeague', 1328);
     prefs.setInt('defaultTimer', 1);
   }
 
-  void setPersonalizedSettings() async{
+  void setPersonalizedSettings() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('isSoundOn', soundOn);
     prefs.setInt('defaultLeague', selectedLeague.id);

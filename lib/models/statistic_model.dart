@@ -11,17 +11,17 @@ class StatisticsModel {
   List<String> goals2Period;
   List<String> goals3Period;
   List<String> goals4Period;
-  List<String> p2Points;
-  List<String> p3Points;
-  List<String> biggestLead;
-  List<String> fouls;
-  List<String> freeThrows;
-  List<String> freeThrowsRate;
-  List<String> leadChanges;
-  List<String> maxPointsInARow;
-  List<String> possession;
-  List<String> timeSpentInLead;
-  List<String> timeOuts;
+  List<dynamic>? p2Points;
+  List<dynamic>? p3Points;
+  List<dynamic>? biggestLead;
+  List<dynamic>? fouls;
+  List<dynamic>? freeThrows;
+  List<dynamic>? freeThrowsRate;
+  List<dynamic>? leadChanges;
+  List<dynamic>? maxPointsInARow;
+  List<dynamic>? possession;
+  List<dynamic>? timeSpentInLead;
+  List<dynamic>? timeOuts;
 
   StatisticsModel({
     required this.teamHome,

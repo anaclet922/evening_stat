@@ -108,44 +108,41 @@ class _OverState extends State<Over> {
                 ),
               ),
             )),
-        body: context.read<MainApi>().apiState == ApiState.loading
-            ? const Center(
-                child: CircularProgressIndicator(
-                  color: primaryLightColor,
-                ),
-              )
-            : SizedBox(
+        body: SizedBox(
                 height: MediaQuery.of(context).size.height,
                 child: Column(
                   children: [
                     Expanded(
-                        child: context.watch<MainApi>().apiState ==
-                                ApiState.loading
-                            ? const Center(
-                                child: CircularProgressIndicator(
-                                  color: primaryLightColor,
-                                ),
-                              )
-                            : ListView.builder(
+                        child: ListView.builder(
                                 itemCount:
                                     context.watch<MainApi>().overs.length,
                                 itemBuilder: (context, index) =>
                                     GestureDetector(
                                       onTap: () {
                                         // print('index');
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    Statistics(
-                                                        context
-                                                            .watch<MainApi>()
-                                                            .overs[index]
-                                                            .leagueId,
-                                                        context
-                                                            .watch<MainApi>()
-                                                            .overs[index]
-                                                            .gameId)));
+                                        Provider.of<MainApi>(context, listen: false)
+                                            .getStatisticsData(
+                                          context,
+                                            Provider.of<MainApi>(context, listen: false)
+                                                .overs[index]
+                                                .leagueId,
+                                            Provider.of<MainApi>(context, listen: false)
+                                                .overs[index]
+                                                .gameId
+                                        );
+                                        // Navigator.push(
+                                        //     context,
+                                        //     MaterialPageRoute(
+                                        //         builder: (context) =>
+                                        //             Statistics(
+                                        //                 context
+                                        //                     .watch<MainApi>()
+                                        //                     .overs[index]
+                                        //                     .leagueId,
+                                        //                 context
+                                        //                     .watch<MainApi>()
+                                        //                     .overs[index]
+                                        //                     .gameId)));
                                       },
                                       child: Container(
                                         margin: const EdgeInsets.only(
@@ -235,20 +232,22 @@ class _OverState extends State<Over> {
                                                           MainAxisAlignment
                                                               .spaceBetween,
                                                       children: [
-                                                        Text(
-                                                          context
-                                                              .watch<MainApi>()
-                                                              .overs[index]
-                                                              .teamHome,
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          style: const TextStyle(
-                                                              fontSize: 16.0,
-                                                              color:
-                                                                  Colors.white,
-                                                              decoration:
-                                                                  TextDecoration
-                                                                      .none),
+                                                        Expanded(
+                                                          child: Text(
+                                                            context
+                                                                .watch<MainApi>()
+                                                                .overs[index]
+                                                                .teamHome,
+                                                            overflow: TextOverflow
+                                                                .ellipsis,
+                                                            style: const TextStyle(
+                                                                fontSize: 16.0,
+                                                                color:
+                                                                    Colors.white,
+                                                                decoration:
+                                                                    TextDecoration
+                                                                        .none),
+                                                          ),
                                                         ),
                                                         Text(
                                                           context
