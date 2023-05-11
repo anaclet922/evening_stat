@@ -2,6 +2,7 @@ import 'package:evening_stat/providers/main_api_provider.dart';
 import 'package:evening_stat/providers/saved_data_provider.dart';
 import 'package:evening_stat/providers/sound_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'components/app.dart';
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
     context.read<SaveData>().initSavedData();
 
     return MaterialApp(
+      builder: EasyLoading.init(),
       debugShowCheckedModeBanner: false,
       title: 'Evening Stat',
       theme: ThemeData(

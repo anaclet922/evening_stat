@@ -1,15 +1,17 @@
 import 'dart:convert';
 import 'dart:math';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:evening_stat/components/night-options/statistics.dart';
+import 'package:evening_stat/components/schedule/statistics.dart';
+import 'package:evening_stat/components/schedule/preview.dart';
 import 'package:evening_stat/models/head_two_head_model.dart';
 import 'package:evening_stat/models/over_model.dart';
 import 'package:evening_stat/models/postion_model.dart';
 import 'package:evening_stat/models/schedule_model.dart';
 import 'package:evening_stat/models/statistic_model.dart';
-import 'package:evening_stat/providers/sound_provider.dart';
 import 'package:evening_stat/utilis/constants.dart';
+import 'package:evening_stat/utilis/notification.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -41,17 +43,18 @@ class MainApi with ChangeNotifier {
     }
   }
 
-  Future<void> getLeaguePosition([int leagueId = 0]) async {
+  Future<void> getLeaguePosition(context, [int leagueId = 0]) async {
     try {
       // print(leagueId);
       if (leagueId == 0) {
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         leagueId = prefs.getInt('defaultLeague') ?? defaultLeagueId;
       }
-
+     var url = '$apiEndPoint?login=$apiLogin&token=$apiToken&task=tabledata&league=$leagueId';
+      // print(url);
       final response = await http.get(
           Uri.parse(
-              '$apiEndPoint?login=$apiLogin&token=$apiToken&task=tabledata&league=$leagueId'),
+              url),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           });
@@ -62,29 +65,31 @@ class MainApi with ChangeNotifier {
         var responseArray = jsonDecode(response.body);
 
         positions = [];
-
+        notifyListeners();
         // print(responseArray['results']['overall']);
-
-        for (var singleResult in responseArray['results']['overall']['tables']
-            [0]['rows']) {
-          PositionModel position = PositionModel(
-              position: singleResult['pos'] ?? 'n/a',
-              win: singleResult['win'] ?? 'n/a',
-              loss: singleResult['loss'] ?? 'n/a',
-              goalsPlus: singleResult['goalsfor'] ?? 'n/a',
-              goalsMinus: singleResult['goalsagainst'] ?? 'n/a',
-              score: singleResult['points'] ?? 'n/a',
-              pct: singleResult['pct'] ?? 'n/a',
-              goalDiffTotal: singleResult['goalDiffTotal'] ?? 0,
-              pctGoalsTotal: singleResult['pctGoalsTotal'] ?? 0,
-              teamId: singleResult['team']['id'] ?? 'n/a',
-              teamName: singleResult['team']['name'],
-              teamImage:
-                  'https://spoyer.com/api/team_img/basketball/${singleResult['team']['id']}.png');
-          //Adding result to the list.
-          positions.add(position);
+        if(responseArray['results'] == null){
+          mySnackBar(context,  Icons.error, "No data about this league found!");
+        }else {
+          for (var singleResult in responseArray['results']['overall']['tables']
+          [0]['rows']) {
+            PositionModel position = PositionModel(
+                position: singleResult['pos'] ?? 'n/a',
+                win: singleResult['win'] ?? 'n/a',
+                loss: singleResult['loss'] ?? 'n/a',
+                goalsPlus: singleResult['goalsfor'] ?? 'n/a',
+                goalsMinus: singleResult['goalsagainst'] ?? 'n/a',
+                score: singleResult['points'] ?? 'n/a',
+                pct: singleResult['pct'] ?? 'n/a',
+                goalDiffTotal: singleResult['goalDiffTotal'] ?? 0,
+                pctGoalsTotal: singleResult['pctGoalsTotal'] ?? 0,
+                teamId: singleResult['team']['id'] ?? 'n/a',
+                teamName: singleResult['team']['name'],
+                teamImage:
+                'https://spoyer.com/api/team_img/basketball/${singleResult['team']['id']}.png');
+            //Adding result to the list.
+            positions.add(position);
+          }
         }
-        // print(positions.length);
         _apiState = ApiState.loaded;
       } else {
         // If the server did not return a 201 CREATED response,
@@ -95,6 +100,7 @@ class MainApi with ChangeNotifier {
       _apiState = ApiState.loaded;
     }
     apiFetchedSound();
+    EasyLoading.dismiss();
     notifyListeners();
   }
 
@@ -119,7 +125,7 @@ class MainApi with ChangeNotifier {
         var responseArray = jsonDecode(response.body);
 
         schedules = [];
-
+        notifyListeners();
         // print(responseArray['results']['overall']);
 
         for (var singleResult in responseArray['games_pre']) {
@@ -189,6 +195,8 @@ class MainApi with ChangeNotifier {
         }
         // print(schedules);
         _apiState = ApiState.loaded;
+
+
       } else {
         // If the server did not return a 201 CREATED response,
         // then throw an exception.
@@ -198,10 +206,11 @@ class MainApi with ChangeNotifier {
       _apiState = ApiState.loaded;
     }
     apiFetchedSound();
+    EasyLoading.dismiss();
     notifyListeners();
   }
 
-  Future<void> getHeadTwoHeadData(String leagueId, String gameId) async {
+  Future<void> getHeadTwoHeadData(context, String leagueId, String gameId) async {
     try {
       final previewResponse = await http.get(
           Uri.parse(
@@ -242,13 +251,38 @@ class MainApi with ChangeNotifier {
         headTwoHead.stadium =
             previewResponseArray['results'][0]['extra']['stadium_data']['name'];
         headTwoHead.capacity = previewResponseArray['results'][0]['extra']
-            ['stadium_data']['capacity'];
+            ['stadium_data']['capacity'] ?? '';
         headTwoHead.city =
             previewResponseArray['results'][0]['extra']['stadium_data']['city'];
         headTwoHead.country = previewResponseArray['results'][0]['extra']
-            ['stadium_data']['country'];
-        headTwoHead.homePosition;
-        headTwoHead.awayPosition;
+            ['stadium_data']['country'] ?? '';
+
+
+       var url = '$apiEndPoint?login=$apiLogin&token=$apiToken&task=tabledata&league=$leagueId';
+       // print(url);
+        final response = await http.get(
+            Uri.parse(url),
+            headers: <String, String>{
+              'Content-Type': 'application/json; charset=UTF-8',
+            });
+
+        if (response.statusCode == 201 || response.statusCode == 200) {
+          // If the server did return a 201 CREATED response,
+          // then parse the JSON.
+          var responseArray = jsonDecode(response.body);
+
+          for (var singleResult in responseArray['results']['overall']['tables']
+          [0]['rows']) {
+
+            if(singleResult['team']['id'] == headTwoHead.teamHomeId){
+              headTwoHead.homePosition = singleResult['pos'];
+            }
+            if(singleResult['team']['id'] == headTwoHead.teamAwayId){
+              headTwoHead.awayPosition = singleResult['pos'];
+            }
+
+          }
+        }
 
         // print(responseArray['results']['overall']);
 
@@ -260,12 +294,28 @@ class MainApi with ChangeNotifier {
             res.substring(idx + 1).trim()
           ];
 
-          H2H h = H2H(homeGoals: parts[0], awayGoals: parts[1]);
+          H2H h = H2H(
+              homeId: singleResult['home']['id'],
+              homeName:  singleResult['home']['name'],
+              awayId: singleResult['away']['id'],
+              awayName:  singleResult['away']['name'],
+              homeGoals: parts[0],
+              awayGoals: parts[1]
+          );
 
           headTwoHead.headTwoHead.add(h);
         }
         // print(headTwoHead);
         _apiState = ApiState.loaded;
+
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    Preview(
+                        leagueId,
+                        gameId)));
+
       } else {
         // If the server did not return a 201 CREATED response,
         // then throw an exception.
@@ -274,7 +324,9 @@ class MainApi with ChangeNotifier {
     } on Exception {
       _apiState = ApiState.loaded;
     }
+    // print('object');
     apiFetchedSound();
+    EasyLoading.dismiss();
     notifyListeners();
   }
 
@@ -331,10 +383,11 @@ class MainApi with ChangeNotifier {
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         leagueId = prefs.getInt('defaultLeague') ?? defaultLeagueId;
       }
-
+      var url = '$apiEndPoint?login=$apiLogin&token=$apiToken&task=enddata&sport=basketball&league=$leagueId&p=1';
+      // print(url);
       final response = await http.get(
           Uri.parse(
-              '$apiEndPoint?login=$apiLogin&token=$apiToken&task=enddata&sport=basketball&day=today'),
+              url),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           });
@@ -345,10 +398,11 @@ class MainApi with ChangeNotifier {
         var responseArray = jsonDecode(response.body);
 
         overs = [];
+        notifyListeners();
 
-        // print(responseArray['results']['overall']);
-
+        // print('outside loop');
         for (var singleResult in responseArray['games_end']) {
+          // print('inside loop');
           final SharedPreferences prefs = await SharedPreferences.getInstance();
           var interestLists = prefs.getStringList('interests') ?? [''];
           var res = singleResult['score'];
@@ -384,99 +438,22 @@ class MainApi with ChangeNotifier {
             overs.add(over);
           }
         }
-        // print(positions.length);
         _apiState = ApiState.loaded;
+        // print('length is ${overs.length}');
+
       } else {
         // If the server did not return a 201 CREATED response,
         // then throw an exception.
         _apiState = ApiState.loaded;
       }
-    } on Exception {
+    } on Exception catch(e){
       _apiState = ApiState.loaded;
     }
     apiFetchedSound();
+    EasyLoading.dismiss();
     notifyListeners();
   }
 
-
-  Future<void> getOversAtDropdownChanged([int leagueId = 0]) async {
-    _apiState = ApiState.loading;
-    notifyListeners();
-    print(_apiState);
-    try {
-      _apiState = ApiState.loaded;
-      // print(leagueId);
-      if (leagueId == 0) {
-        final SharedPreferences prefs = await SharedPreferences.getInstance();
-        leagueId = prefs.getInt('defaultLeague') ?? defaultLeagueId;
-      }
-
-      final response = await http.get(
-          Uri.parse(
-              '$apiEndPoint?login=$apiLogin&token=$apiToken&task=enddata&sport=basketball&day=today'),
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
-          });
-      print(response.statusCode);
-      if (response.statusCode == 201 || response.statusCode == 200) {
-        // If the server did return a 201 CREATED response,
-        // then parse the JSON.
-        var responseArray = jsonDecode(response.body);
-
-        overs = [];
-
-        // print(responseArray['results']['overall']);
-
-        for (var singleResult in responseArray['games_end']) {
-          final SharedPreferences prefs = await SharedPreferences.getInstance();
-          var interestLists = prefs.getStringList('interests') ?? [''];
-          var res = singleResult['score'];
-
-          if (res.toString().isNotEmpty) {
-            int idx = res.indexOf(":");
-            List parts = [
-              res.substring(0, idx).trim(),
-              res.substring(idx + 1).trim()
-            ];
-
-            int i = int.parse(singleResult['time']);
-            var dt = DateTime.fromMillisecondsSinceEpoch(i * 1000);
-            var tTime = DateFormat('hh:mm a').format(dt).toString();
-            var dDate = DateFormat('MM.dd.yyyy').format(dt).toString();
-
-            var gameId = singleResult['game_id'];
-
-            OverModel over = OverModel(
-                gameId: gameId,
-                leagueId: singleResult['league']['id'],
-                date: dDate,
-                time: tTime,
-                teamHome: singleResult['home']['name'],
-                teamHomeId: singleResult['home']['id'],
-                teamHomePoints: parts[0],
-                teamAway: singleResult['away']['name'],
-                teamAwayId: singleResult['away']['id'],
-                teamAwayPoints: parts[1],
-                isFavorite: interestLists!.contains(gameId) ? true : false);
-
-            //Adding result to the list.
-            overs.add(over);
-          }
-        }
-        // print(positions.length);
-        _apiState = ApiState.loaded;
-      } else {
-        // If the server did not return a 201 CREATED response,
-        // then throw an exception.
-        _apiState = ApiState.loaded;
-      }
-    } on Exception {
-      // print('esponse.statusCode');
-      _apiState = ApiState.loaded;
-    }
-    apiFetchedSound();
-    notifyListeners();
-  }
 
   Future<void> getStatisticsData(context, String leagueId, String gameId) async {
     _apiState = ApiState.loading;
@@ -494,8 +471,7 @@ class MainApi with ChangeNotifier {
         var responseArray = jsonDecode(response.body);
 
         statistics = emptyStatistic();
-        print(gameId);
-        print(responseArray['results'][0]['stats']);
+
         var res = responseArray['results'][0]['ss'];
         int idx = res.indexOf("-");
         List parts = [
@@ -550,7 +526,7 @@ class MainApi with ChangeNotifier {
         statistics.possession = [];
         statistics.timeSpentInLead = [];
         statistics.timeOuts =
-        (responseArray['results'][0]['stats']['time_outs'] ?? ['n/a', 'n/a'])  as List<String>;
+        responseArray['results'][0]['stats']['time_outs'] ?? ['n/a', 'n/a'];
 
         // print(statistics);
         _apiState = ApiState.loaded;
@@ -573,6 +549,7 @@ class MainApi with ChangeNotifier {
       _apiState = ApiState.loaded;
     }
     apiFetchedSound();
+    EasyLoading.dismiss();
     notifyListeners();
   }
 
@@ -585,8 +562,12 @@ class MainApi with ChangeNotifier {
       if (interestLists.length > 1) {
         // print(interestLists);6598731 6599041
         // print(interestLists.reversed);
+
         interests = [];
+        notifyListeners();
+        var c = 1;
         for (var interest in interestLists.reversed) {
+
           var gameId = interest;
           final response = await http.get(
               Uri.parse(
@@ -642,5 +623,66 @@ class MainApi with ChangeNotifier {
 
   }
 
-  // Future<void> openStatistics()
+  Future<void> removeInterests(context, String gameId, bool isFavorite) async{
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    var interestsList = prefs.getStringList('interests');
+    if (isFavorite) {
+      //already exists, remove it
+      interestsList?.remove(gameId);
+      for(var i in interests){
+        if(i.gameId == gameId){
+          interests.remove(i);
+        }
+      }
+    } else {
+      interestsList?.add(gameId);
+    }
+    prefs.setStringList('interests', interestsList ?? ['']);
+
+
+    notifyListeners();
+  }
+
+
+  Future<void> addRemoveInterests(context, int index, String gameId, bool isFavorite) async{
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    var interestsList = prefs.getStringList('interests');
+    if (isFavorite) {
+      //already exists, remove it
+      interestsList?.remove(gameId);
+      for(var i in schedules){
+        if(i.gameId == gameId){
+          schedules[index].isFavorite = false;
+        }
+      }
+    } else {
+      interestsList?.add(gameId);
+      schedules[index].isFavorite = true;
+    }
+    prefs.setStringList('interests', interestsList ?? ['']);
+    notifyListeners();
+    getInterests();
+  }
+
+  Future<void> addRemoveInterestsOvers(context, int index, String gameId, bool isFavorite) async{
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    var interestsList = prefs.getStringList('interests');
+    if (isFavorite) {
+      //already exists, remove it
+      interestsList?.remove(gameId);
+      for(var i in overs){
+        if(i.gameId == gameId){
+          overs[index].isFavorite = false;
+        }
+      }
+    } else {
+      interestsList?.add(gameId);
+      overs[index].isFavorite = true;
+    }
+    prefs.setStringList('interests', interestsList ?? ['']);
+    notifyListeners();
+    getInterests();
+  }
+
+
 }

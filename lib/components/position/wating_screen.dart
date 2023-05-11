@@ -24,7 +24,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
   bool isDay = true;
 
   countDown(){
-    var duration = const Duration(seconds: 5); //change it to 60 seconds
+    var duration = const Duration(seconds: 60); //change it to 60 seconds
     return Timer(duration, route);
   }
 
@@ -53,8 +53,11 @@ class _WaitingScreenState extends State<WaitingScreen> {
 
     //fetch api
     context.read<SaveData>().initSavedData();
-    context.read<MainApi>().getLeaguePosition();
+    context.read<MainApi>().getLeaguePosition(context);
     context.read<MainApi>().getSchedules();
+    context.read<MainApi>().getOvers();
+    context.read<MainApi>().getInterests();
+    // print('All functions run');
 
     return CupertinoPageScaffold(
       backgroundColor: primaryColor,

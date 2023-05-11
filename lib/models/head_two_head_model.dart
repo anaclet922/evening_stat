@@ -32,11 +32,21 @@ class HeadTwoHeadModel {
 }
 
 class H2H{
+  String homeId;
+  String awayId;
+  String homeName;
+  String awayName;
   String homeGoals;
   String awayGoals;
 
+
   H2H({
+    required this.homeId,
+    required this.awayId,
+    required this.homeName,
+    required this.awayName,
     required this.homeGoals,
     required this.awayGoals
 });
+
 }

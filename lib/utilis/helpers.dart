@@ -1,5 +1,5 @@
-
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 bool checkTimeRangeStatus(String openTime, String closedTime) {
   //NOTE: Time should be as given format only
@@ -14,6 +14,7 @@ bool checkTimeRangeStatus(String openTime, String closedTime) {
   String openHr = openTime.substring(0, 2);
   String openMin = openTime.substring(3, 5);
   String openAmPm = openTime.substring(5);
+
   TimeOfDay timeOpen;
   if (openAmPm == "AM") {
     //am case
@@ -83,4 +84,19 @@ bool checkTimeRangeStatus(String openTime, String closedTime) {
 
   return false;
 
+}
+
+
+bool checkTimeRangeStatus2(String openTime, String closeTime){
+  DateFormat dateFormat = DateFormat.Hm();
+  DateTime now = DateTime.now();
+  DateTime open = dateFormat.parse(openTime);
+  open = DateTime(now.year, now.month, now.day, open.hour, open.minute);
+  DateTime close = dateFormat.parse(closeTime);
+  close = DateTime(now.year, now.month, now.day, close.hour, close.minute);
+
+  if(now.isAfter(open) && now.isBefore(close)){ //is in between
+      return true;
+  }
+  return false;
 }

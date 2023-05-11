@@ -17,7 +17,7 @@ class _PreviewState extends State<Preview> {
   @override
   void initState() {
     super.initState();
-    Provider.of<MainApi>(context, listen: false).getHeadTwoHeadData(widget.leagueId, widget.gameId);
+    // Provider.of<MainApi>(context, listen: false).getHeadTwoHeadData(widget.leagueId, widget.gameId);
   }
 
   @override
@@ -81,7 +81,7 @@ class _PreviewState extends State<Preview> {
                             'https://spoyer.com/api/team_img/basketball/${context.watch<MainApi>().headTwoHead.teamHomeId}.png',
                             width: 50,
                             errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
-                              return Image.asset('assets/ball.png', width: 50,);
+                               return const Text('ð¢');
                             },
                           ),
                           Text(
@@ -101,7 +101,7 @@ class _PreviewState extends State<Preview> {
                             'https://spoyer.com/api/team_img/basketball/${context.watch<MainApi>().headTwoHead.teamAwayId}.png',
                             width: 50,
                             errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
-                              return Image.asset('assets/ball.png', width: 50,);
+                               return const Text('ð¢');
                             },
                           ),
                           Text(
@@ -201,7 +201,7 @@ class _PreviewState extends State<Preview> {
                             children: [
                               const Text('Home Position:', style: TextStyle(color: primaryLightColor, fontSize: 16),),
                               Text(
-                                context.watch<MainApi>().headTwoHead.stadium,
+                                context.watch<MainApi>().headTwoHead.homePosition,
                                 style: const TextStyle(
                                     color: whiteColor, fontSize: 16
                                 ),
@@ -214,7 +214,7 @@ class _PreviewState extends State<Preview> {
                           children: [
                             const Text('Away Position:', style: TextStyle(color: primaryLightColor, fontSize: 16),),
                             Text(
-                              context.watch<MainApi>().headTwoHead.stadium,
+                              context.watch<MainApi>().headTwoHead.awayPosition,
                               style: const TextStyle(
                                   color: whiteColor, fontSize: 16
                               ),
@@ -243,16 +243,16 @@ class _PreviewState extends State<Preview> {
                                     Column(
                                       children: [
                                         Image.network(
-                                          'https://spoyer.com/api/team_img/basketball/${context.watch<MainApi>().headTwoHead.teamHomeId}.png',
+                                          'https://spoyer.com/api/team_img/basketball/${head.homeId}.png',
                                           width: 50,
                                           errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
-                                            return Image.asset('assets/ball.png', width: 50,);
+                                             return const Text('ð¢');
                                           },
                                         ),
                                         Text(
                                           maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
-                                          context.watch<MainApi>().headTwoHead.teamHome,
+                                          head.homeName,
                                           style: const TextStyle(
                                               fontSize: 15,
                                               decoration: TextDecoration.none,
@@ -292,16 +292,16 @@ class _PreviewState extends State<Preview> {
                                     Column(
                                       children: [
                                         Image.network(
-                                          'https://spoyer.com/api/team_img/basketball/${context.watch<MainApi>().headTwoHead.teamAwayId}.png',
+                                          'https://spoyer.com/api/team_img/basketball/${head.awayId}.png',
                                           width: 50,
                                           errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
-                                            return Image.asset('assets/ball.png', width: 50,);
+                                             return const Text('ð¢');
                                           },
                                         ),
                                         Text(
                                           maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
-                                          context.watch<MainApi>().headTwoHead.teamAway,
+                                          head.awayName,
                                           style: const TextStyle(
                                               fontSize: 15,
                                               decoration: TextDecoration.none,

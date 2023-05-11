@@ -100,22 +100,27 @@ class _OptionState extends State<Option> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
+    return Scaffold(
       backgroundColor: primaryColor,
-      navigationBar: const CupertinoNavigationBar(
+      appBar: AppBar(
+        centerTitle: true,
         backgroundColor: primaryColor,
-        middle: Text(
+        title: const Text(
           'Option',
           style: TextStyle(color: whiteColor),
         ),
       ),
-      child: Container(
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
             image: DecorationImage(
           image: Image.asset("assets/option-background-1.png").image,
           fit: BoxFit.cover,
         )),
         child: Container(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
           padding: const EdgeInsets.all(30),
           decoration: const BoxDecoration(color: primaryHalfColor),
           child: Column(
@@ -274,99 +279,47 @@ class _OptionState extends State<Option> {
                         ],
                       ),
                     ),
+                    const Padding(
+                      padding:  EdgeInsets.only(top: 40.0),
+                      child: Text(
+                        'Timer',
+                        style: TextStyle(
+                            color: whiteColor,
+                            decoration: TextDecoration.none,
+                            fontSize: 16.0),
+                      ),
+                    ),
+                    Text(
+                      currentSliderValue.toInt().toString(),
+                      style: const TextStyle(
+                          color: whiteColor,
+                          decoration: TextDecoration.none,
+                          fontSize: 16.0),
+                    ),
                     Container(
                       margin: const EdgeInsets.only(top: 32.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const Text(
-                            'Timer',
-                            style: TextStyle(
-                                color: whiteColor,
-                                decoration: TextDecoration.none,
-                                fontSize: 16.0),
-                          ),
-                          Text(
-                            currentSliderValue.toInt().toString(),
-                            style: const TextStyle(
-                                color: whiteColor,
-                                decoration: TextDecoration.none,
-                                fontSize: 16.0),
-                          ),
-                          SizedBox(
-                            width: double.infinity,
-                            child:
-                            // CupertinoSlider(
-                            //   key: const Key('slider'),
-                            //   value: currentSliderValue,
-                            //   // This allows the slider to jump between divisions.
-                            //   // If null, the slide movement is continuous.
-                            //   divisions: 24,
-                            //   // The maximum slider value
-                            //   max: 24,
-                            //   activeColor: primaryColor,
-                            //   thumbColor: primaryColor,
-                            //   // This is called when sliding is started.
-                            //   onChangeStart: (double value) {
-                            //     setState(() {
-                            //       _sliderStatus = 'Sliding';
-                            //     });
-                            //   },
-                            //   // This is called when sliding has ended.
-                            //   onChangeEnd: (double value) {
-                            //     setState(() {
-                            //       _sliderStatus = 'Finished sliding';
-                            //     });
-                            //   },
-                            //   // This is called when slider value is changed.
-                            //   onChanged: (double value) {
-                            //     setState(() {
-                            //       currentSliderValue = value;
-                            //     });
-                            //   },
-                            // ),
-                            SfSliderTheme(
-                              data: SfSliderThemeData(
-                                  activeTrackColor: primaryColor,
-                                  inactiveTrackColor: Colors.white,
-                                  activeLabelStyle:
-                                      const TextStyle(color: Colors.white),
-                                  inactiveLabelStyle:
-                                      const TextStyle(color: Colors.white),
-                                activeTickColor: Colors.white,
-                                inactiveTickColor: Colors.white,
-                                activeTrackHeight: 20,
-                                inactiveTrackHeight: 18,
-
-                              ),
-
-                              child: SizedBox(
-                                width: 200,
-                                height: 200,
-                                child: SfSlider(
-                                  min: 1.0,
-                                  max: 24.0,
-                                  value: 1,
-                                  interval: 2,
-                                  stepSize: 1,
-                                  showTicks: true,
-                                  showLabels: true,
-                                  inactiveColor: Colors.white,
-                                  activeColor: primaryColor,
-                                  enableTooltip: true,
-                                  showDividers: false,
-                                  minorTicksPerInterval: 1,
-                                  onChanged: (dynamic value) {
-                                    setState(() {
-                                      // currentSliderValue = value;
-                                    });
-                                    print(value);
-                                  },
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
+                      child: SizedBox(
+                        width: double.infinity,
+                        height: 50,
+                        child:SfSlider(
+                          min: 1.0,
+                          max: 24.0,
+                          value: currentSliderValue ?? 1,
+                          interval: 2,
+                          stepSize: 1,
+                          showTicks: true,
+                          showLabels: true,
+                          inactiveColor: Colors.white,
+                          activeColor: primaryColor,
+                          enableTooltip: true,
+                          showDividers: false,
+                          minorTicksPerInterval: 1,
+                          onChanged: (dynamic value) {
+                            setState(() {
+                              currentSliderValue = value;
+                            });
+                          },
+                        ),
                       ),
                     ),
 
@@ -492,13 +445,14 @@ class _OptionState extends State<Option> {
                           TextButton(
                               onPressed: () {
                                 context.read<MySound>().btnPressedSound();
-                                setPersonalizedSettings();
+                                setPersonalizedSettings(context);
                                 Navigator.of(context).pop();
                                 if (!soundOn) {
                                   context.read<MySound>().stopBackgroundSound();
                                 } else {
                                   context.read<MySound>().playBackgroundSound();
                                 }
+                                context.read<SaveData>().saveTimeRange(currentSliderValue.toInt());
                               },
                               child: const Text(
                                 'Yes',
@@ -582,12 +536,13 @@ class _OptionState extends State<Option> {
                           TextButton(
                               onPressed: () {
                                 context.read<MySound>().btnPressedSound();
-                                setDefaultSettings();
+                                setDefaultSettings(context);
                                 Navigator.of(context).pop();
                                 setState(() {
                                   soundOn = true;
                                 });
                                 context.read<MySound>().playBackgroundSound();
+                                context.read<SaveData>().saveTimeRange(1);
                               },
                               child: const Text(
                                 'Yes',
@@ -624,14 +579,14 @@ class _OptionState extends State<Option> {
     );
   }
 
-  void setDefaultSettings() async {
+  void setDefaultSettings(context) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('isSoundOn', true);
     prefs.setInt('defaultLeague', 1328);
     prefs.setInt('defaultTimer', 1);
   }
 
-  void setPersonalizedSettings() async {
+  void setPersonalizedSettings(context) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('isSoundOn', soundOn);
     prefs.setInt('defaultLeague', selectedLeague.id);

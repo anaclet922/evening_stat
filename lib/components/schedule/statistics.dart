@@ -82,7 +82,7 @@ class _StatisticsState extends State<Statistics> {
                               'https://spoyer.com/api/team_img/basketball/${context.watch<MainApi>().statistics.teamHomeId}.png',
                               width: 50,
                               errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
-                                return Image.asset('assets/ball.png', width: 50,);
+                                return const Text('ð¢');
                               },
                             ),
                             Text(
@@ -105,7 +105,7 @@ class _StatisticsState extends State<Statistics> {
                            'https://spoyer.com/api/team_img/basketball/${context.watch<MainApi>().statistics.teamAwayId}.png',
                            width: 50,
                            errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
-                             return Image.asset('assets/ball.png', width: 50,);
+                             return const Text('ð¢');
                            },
                          ),
                          Text(
