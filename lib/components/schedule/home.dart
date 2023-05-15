@@ -1,5 +1,7 @@
-import 'package:evening_stat/components/schedule/statistics.dart';
-import 'package:evening_stat/components/schedule/preview.dart';
+// import 'package:evening_stat/components/schedule/statistics.dart';
+// import 'package:evening_stat/components/schedule/preview.dart';
+import 'dart:async';
+
 import 'package:evening_stat/models/league_model.dart';
 import 'package:evening_stat/providers/main_api_provider.dart';
 import 'package:evening_stat/providers/saved_data_provider.dart';
@@ -54,6 +56,9 @@ class _ScheduleState extends State<Schedule> {
     }
   }
 
+
+  late Timer balanceTimer2;
+
   @override
   void initState() {
     initVars();
@@ -62,6 +67,17 @@ class _ScheduleState extends State<Schedule> {
     // } else {
     //   Provider.of<MainApi>(context, listen: false).getSchedules();
     // }
+    balanceTimer2 = Timer.periodic(const Duration(seconds: 120),
+            (Timer t) {
+          if(mounted){
+            try {
+              Provider.of<MainApi>(context, listen: false).getInterests();
+            } on Exception {
+              rethrow;
+            }
+          }
+        }
+    );
     super.initState();
   }
 
@@ -101,8 +117,8 @@ class _ScheduleState extends State<Schedule> {
                       Icons.keyboard_arrow_down,
                       color: whiteColor,
                     ),
-                    value: selectedLeague,
-                    items: leagueItems.map((LeagueModel value) {
+                    value: context.watch<SaveData>().selectedLeague,
+                    items: context.read<SaveData>().leagueItems.map((LeagueModel value) {
                       return DropdownMenuItem(
                           // alignment: AlignmentDirectional.bottomCenter,
                           value: value,
@@ -113,11 +129,13 @@ class _ScheduleState extends State<Schedule> {
                     }).toList(),
                     onChanged: (LeagueModel? newValue) {
                       context.read<MySound>().btnPressedSound();
-                      setState(() {
-                        selectedLeague = newValue!;
-                      });
+                      // setState(() {
+                      //   selectedLeague = newValue!;
+                      // });
+                      context.read<SaveData>().changeSelectedLeague(newValue!);
                       EasyLoading.show(status: 'loading...');
-                      context.read<MainApi>().getSchedules(selectedLeague.id);
+                      context.read<MainApi>().getSchedules(newValue!.id);
+                      context.read<MainApi>().getLeaguePosition(context, newValue!.id);
                     },
                     underline: const SizedBox(),
                   ),
@@ -478,53 +496,58 @@ class _ScheduleState extends State<Schedule> {
     return Scaffold(
         backgroundColor: primaryColor,
         appBar: AppBar(
-            backgroundColor: primaryColor,
-            title: Container(
-              height: 30.0,
-              width: double.infinity,
-              margin: const EdgeInsets.only(
-                  right: 20.0, left: 20, top: 10, bottom: 10),
-              padding: const EdgeInsets.only(left: 20.0, right: 20),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(22.5),
-                  color: primaryColor,
-                  border: Border.all(width: 2, color: primaryLightColor)),
-              child: Material(
-                color: Colors.transparent,
-                child: Container(
-                  padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-                  width: double.infinity,
-                  child: DropdownButton(
-                    isExpanded: true,
-                    borderRadius: BorderRadius.circular(23),
-                    // alignment: AlignmentDirectional.center,
-                    dropdownColor: primaryColor,
-                    icon: const Icon(
-                      Icons.keyboard_arrow_down,
-                      color: whiteColor,
-                    ),
-                    value: selectedLeague,
-                    items: leagueItems.map((LeagueModel value) {
-                      return DropdownMenuItem(
-                          // alignment: AlignmentDirectional.bottomCenter,
-                          value: value,
-                          child: Text(
-                            value.leagueName,
-                            style: const TextStyle(color: whiteColor),
-                          ));
-                    }).toList(),
-                    onChanged: (LeagueModel? newValue) {
-                      context.read<MySound>().btnPressedSound();
-                      // setState(() {
-                      //   selectedLeague = newValue!;
-                      // });
-                      // context.read<MainApi>().getOvers(selectedLeague.id);
-                    },
-                    underline: const SizedBox(),
-                  ),
-                ),
-              ),
-            )),
+        centerTitle: true,
+        backgroundColor: primaryColor,
+        title: const Text(
+        'Interests',
+        style: TextStyle(color: whiteColor),
+    )),
+            // Container(
+            //   height: 30.0,
+            //   width: double.infinity,
+            //   margin: const EdgeInsets.only(
+            //       right: 20.0, left: 20, top: 10, bottom: 10),
+            //   padding: const EdgeInsets.only(left: 20.0, right: 20),
+            //   decoration: BoxDecoration(
+            //       borderRadius: BorderRadius.circular(22.5),
+            //       color: primaryColor,
+            //       border: Border.all(width: 2, color: primaryLightColor)),
+            //   child: Material(
+            //     color: Colors.transparent,
+            //     child: Container(
+            //       padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+            //       width: double.infinity,
+            //       child: DropdownButton(
+            //         isExpanded: true,
+            //         borderRadius: BorderRadius.circular(23),
+            //         // alignment: AlignmentDirectional.center,
+            //         dropdownColor: primaryColor,
+            //         icon: const Icon(
+            //           Icons.keyboard_arrow_down,
+            //           color: whiteColor,
+            //         ),
+            //         value: context.watch<SaveData>().selectedLeague,
+            //         items: context.read<SaveData>().leagueItems.map((LeagueModel value) {
+            //           return DropdownMenuItem(
+            //               // alignment: AlignmentDirectional.bottomCenter,
+            //               value: value,
+            //               child: Text(
+            //                 value.leagueName,
+            //                 style: const TextStyle(color: whiteColor),
+            //               ));
+            //         }).toList(),
+            //         onChanged: (LeagueModel? newValue) {
+            //           context.read<MySound>().btnPressedSound();
+            //           // setState(() {
+            //           //   selectedLeague = newValue!;
+            //           // });
+            //           // context.read<MainApi>().getOvers(selectedLeague.id);
+            //         },
+            //         underline: const SizedBox(),
+            //       ),
+            //     ),
+            //   ),
+            // )),
         body: SizedBox(
           height: MediaQuery.of(context).size.height,
           child: Column(

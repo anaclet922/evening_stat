@@ -23,6 +23,11 @@ void main() async {
     ],
     child: const MyApp(),
   ));
+  configLoading();
+}
+
+void configLoading() {
+  EasyLoading.instance.userInteractions = false;
 }
 
 class MyApp extends StatelessWidget {

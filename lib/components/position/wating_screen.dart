@@ -5,7 +5,7 @@ import 'package:evening_stat/providers/main_api_provider.dart';
 import 'package:evening_stat/providers/saved_data_provider.dart';
 import 'package:evening_stat/providers/sound_provider.dart';
 import 'package:evening_stat/utilis/constants.dart';
-import 'package:evening_stat/utilis/helpers.dart';
+// import 'package:evening_stat/utilis/helpers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -47,9 +47,9 @@ class _WaitingScreenState extends State<WaitingScreen> {
   Widget build(BuildContext context) {
 
 
-    if(!checkTimeRangeStatus('06:00AM', '12:00PM')){
-      isDay = !isDay;
-    }
+    // if(!checkTimeRangeStatus('06:00AM', '12:00PM')){
+    //   isDay = !isDay;
+    // }
 
     //fetch api
     context.read<SaveData>().initSavedData();
@@ -68,7 +68,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
           style: TextStyle(color: whiteColor),
         ),
       ),
-      child: isDay ? dayWidget() : nightWidget()
+      child: context.watch<SaveData>().isNight ? nightWidget() : dayWidget()
     );
   }
 

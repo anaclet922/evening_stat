@@ -1,4 +1,14 @@
 class PositionModel {
+  String groupName;
+  List<RowsModel> rows;
+
+  PositionModel(
+      {required this.groupName,
+        required this.rows});
+
+}
+
+class RowsModel {
   String position;
   String win;
   String loss;
@@ -12,7 +22,7 @@ class PositionModel {
   String teamName;
   String teamImage;
 
-  PositionModel(
+  RowsModel(
       {required this.position,
       required this.win,
       required this.loss,
@@ -26,18 +36,4 @@ class PositionModel {
       required this.teamName,
       required this.teamImage});
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'position': position,
-        'win': win,
-        'loss': loss,
-        'goalsPlus': goalsPlus,
-        'goalsMinus': goalsMinus,
-        'score': score,
-        'pct': pct,
-        'goalDiffTotal': goalDiffTotal,
-        'pctGoalsTotal': pctGoalsTotal,
-        'teamId': teamId,
-        'teamName': teamName,
-        'teamImage': teamImage,
-      };
 }

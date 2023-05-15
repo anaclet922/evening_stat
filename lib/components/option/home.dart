@@ -1,13 +1,14 @@
 import 'package:evening_stat/models/league_model.dart';
+// import 'package:evening_stat/providers/main_api_provider.dart';
 import 'package:evening_stat/providers/saved_data_provider.dart';
 import 'package:evening_stat/providers/sound_provider.dart';
 import 'package:evening_stat/utilis/constants.dart';
-import 'package:evening_stat/utilis/custom_slider.dart';
+// import 'package:evening_stat/utilis/custom_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:syncfusion_flutter_core/theme.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 class Option extends StatefulWidget {
@@ -215,70 +216,70 @@ class _OptionState extends State<Option> {
                         ),
                       ],
                     ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 30.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            'Choose League',
-                            style: TextStyle(
-                                color: whiteColor,
-                                decoration: TextDecoration.none,
-                                fontSize: 16.0),
-                          ),
-                          Expanded(
-                            child: Container(
-                              height: 19.0,
-                              margin: const EdgeInsets.only(
-                                  right: 20.0, left: 20.0),
-                              padding: const EdgeInsets.only(bottom: 2.0),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(22.5),
-                                  gradient: primaryGradient),
-                              child: Material(
-                                color: Colors.transparent,
-                                child: DropdownButton(
-                                    isExpanded: true,
-                                  borderRadius: BorderRadius.circular(23),
-                                  alignment: AlignmentDirectional.center,
-                                  dropdownColor: primaryColor,
-                                  icon: const SizedBox.shrink(),
-                                  value: selectedLeague,
-                                  items: leagueItems.map((LeagueModel value) {
-                                    return DropdownMenuItem(
-                                        alignment:
-                                            AlignmentDirectional.center,
-                                        value: value,
-                                        child: SizedBox(
-                                          // color: Colors.deepOrange,
-                                          width: 126,
-                                          child: Text(
-                                            value.leagueName,
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 1,
-                                            softWrap: false,
-                                            style: const TextStyle(
-                                                color: whiteColor,
-                                                fontSize: 12.0,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ));
-                                  }).toList(),
-                                  onChanged: (LeagueModel? newValue) {
-                                    context.read<MySound>().btnPressedSound();
-                                    setState(() {
-                                      selectedLeague = newValue!;
-                                    });
-                                  },
-                                  underline: const SizedBox(),
-                                ),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
+                    // Container(
+                    //   margin: const EdgeInsets.only(top: 30.0),
+                    //   child: Row(
+                    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //     children: [
+                    //       const Text(
+                    //         'Choose League',
+                    //         style: TextStyle(
+                    //             color: whiteColor,
+                    //             decoration: TextDecoration.none,
+                    //             fontSize: 16.0),
+                    //       ),
+                    //       Expanded(
+                    //         child: Container(
+                    //           height: 19.0,
+                    //           margin: const EdgeInsets.only(
+                    //               right: 20.0, left: 20.0),
+                    //           padding: const EdgeInsets.only(bottom: 2.0),
+                    //           decoration: BoxDecoration(
+                    //               borderRadius: BorderRadius.circular(22.5),
+                    //               gradient: primaryGradient),
+                    //           child: Material(
+                    //             color: Colors.transparent,
+                    //             child: DropdownButton(
+                    //                 isExpanded: true,
+                    //               borderRadius: BorderRadius.circular(23),
+                    //               alignment: AlignmentDirectional.center,
+                    //               dropdownColor: primaryColor,
+                    //               icon: const SizedBox.shrink(),
+                    //               value: selectedLeague,
+                    //               items: leagueItems.map((LeagueModel value) {
+                    //                 return DropdownMenuItem(
+                    //                     alignment:
+                    //                         AlignmentDirectional.center,
+                    //                     value: value,
+                    //                     child: SizedBox(
+                    //                       // color: Colors.deepOrange,
+                    //                       width: 126,
+                    //                       child: Text(
+                    //                         value.leagueName,
+                    //                         overflow: TextOverflow.ellipsis,
+                    //                         maxLines: 1,
+                    //                         softWrap: false,
+                    //                         style: const TextStyle(
+                    //                             color: whiteColor,
+                    //                             fontSize: 12.0,
+                    //                             fontWeight: FontWeight.bold),
+                    //                       ),
+                    //                     ));
+                    //               }).toList(),
+                    //               onChanged: (LeagueModel? newValue) {
+                    //                 context.read<MySound>().btnPressedSound();
+                    //                 setState(() {
+                    //                   selectedLeague = newValue!;
+                    //                 });
+                    //               },
+                    //               underline: const SizedBox(),
+                    //             ),
+                    //           ),
+                    //         ),
+                    //       )
+                    //     ],
+                    //   ),
+                    // ),
                     const Padding(
                       padding:  EdgeInsets.only(top: 40.0),
                       child: Text(
@@ -304,7 +305,7 @@ class _OptionState extends State<Option> {
                         child:SfSlider(
                           min: 1.0,
                           max: 24.0,
-                          value: currentSliderValue ?? 1,
+                          value: currentSliderValue,
                           interval: 2,
                           stepSize: 1,
                           showTicks: true,
@@ -445,7 +446,6 @@ class _OptionState extends State<Option> {
                           TextButton(
                               onPressed: () {
                                 context.read<MySound>().btnPressedSound();
-                                setPersonalizedSettings(context);
                                 Navigator.of(context).pop();
                                 if (!soundOn) {
                                   context.read<MySound>().stopBackgroundSound();
@@ -453,6 +453,11 @@ class _OptionState extends State<Option> {
                                   context.read<MySound>().playBackgroundSound();
                                 }
                                 context.read<SaveData>().saveTimeRange(currentSliderValue.toInt());
+                                context.read<SaveData>().setPersonalizedSettings(soundOn, selectedLeague.id, currentSliderValue.toInt());
+                                // context.read<MainApi>().getLeaguePosition(context, selectedLeague.id);
+                                //
+                                // context.read<MainApi>().getOvers(selectedLeague.id);
+
                               },
                               child: const Text(
                                 'Yes',
@@ -536,13 +541,15 @@ class _OptionState extends State<Option> {
                           TextButton(
                               onPressed: () {
                                 context.read<MySound>().btnPressedSound();
-                                setDefaultSettings(context);
                                 Navigator.of(context).pop();
                                 setState(() {
                                   soundOn = true;
                                 });
                                 context.read<MySound>().playBackgroundSound();
                                 context.read<SaveData>().saveTimeRange(1);
+                                context.read<SaveData>().saveDefaultSettings();
+                                // context.read<MainApi>().getLeaguePosition(context, 1328);
+                                // context.read<MainApi>().getOvers(1328);
                               },
                               child: const Text(
                                 'Yes',
@@ -579,17 +586,5 @@ class _OptionState extends State<Option> {
     );
   }
 
-  void setDefaultSettings(context) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool('isSoundOn', true);
-    prefs.setInt('defaultLeague', 1328);
-    prefs.setInt('defaultTimer', 1);
-  }
 
-  void setPersonalizedSettings(context) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool('isSoundOn', soundOn);
-    prefs.setInt('defaultLeague', selectedLeague.id);
-    prefs.setInt('defaultTimer', currentSliderValue.toInt());
-  }
 }

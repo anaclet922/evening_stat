@@ -14,6 +14,7 @@ class CustomSlider extends StatelessWidget {
   final bool linearStep;
   final List<double>? steps;
 
+  // ignore: prefer_const_constructors_in_immutables, use_key_in_widget_constructors
   CustomSlider({
     required this.value,
     required this.minValue,
@@ -54,9 +55,9 @@ class CustomSlider extends StatelessWidget {
                     child: index % (minorTick + 1) == 0
                         ? Text(
                       linearStep
-                          ? '${(index / (divisions - 1) * maxValue).toStringAsFixed(tickValuePrecision)}'
+                          ? (index / (divisions - 1) * maxValue).toStringAsFixed(tickValuePrecision)
                           : '${(steps?[index])?.toStringAsFixed(tickValuePrecision)}',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 12,
                       ),
                       textAlign: TextAlign.center,
@@ -93,10 +94,10 @@ class CustomSlider extends StatelessWidget {
               overlayColor: activeColor == null
                   ? Colors.orange.withOpacity(0.1)
                   : activeColor!.withOpacity(0.1),
-              thumbShape: RoundSliderThumbShape(enabledThumbRadius: 12.0),
+              thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 12.0),
               trackShape: CustomTrackShape(),
               showValueIndicator: ShowValueIndicator.never,
-              valueIndicatorTextStyle: TextStyle(
+              valueIndicatorTextStyle: const TextStyle(
                 fontSize: 12,
               ),
             ),

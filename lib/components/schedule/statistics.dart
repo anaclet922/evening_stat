@@ -291,6 +291,32 @@ class _StatisticsState extends State<Statistics> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
+                                    context.watch<MainApi>().statistics.biggestLead![0] ?? '',
+                                    style: const TextStyle(fontSize: 16, color: whiteColor),),
+                                  Container(
+                                    padding: const EdgeInsets.only(bottom: 10),
+                                    decoration: const BoxDecoration(
+                                        border: Border(
+                                            bottom: BorderSide(
+                                                color: primaryLightColor, width: 2
+                                            )
+                                        )
+                                    ),
+                                    child: const Text('Biggest lead', style: TextStyle(fontSize: 16, color: whiteColor)),
+                                  ),
+                                  Text(
+                                    context.watch<MainApi>().statistics.biggestLead![1] ?? '',
+                                    style: const TextStyle(fontSize: 16, color: whiteColor),),
+                                ],
+                              ),
+
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 50.0, right: 50, top: 10.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
                                     context.watch<MainApi>().statistics.fouls![0] ?? '',
                                     style: const TextStyle(fontSize: 16, color: whiteColor),),
                                   Container(
@@ -364,6 +390,115 @@ class _StatisticsState extends State<Statistics> {
                                 ],
                               ),
                             ),
+
+                            Padding(
+                              padding: const EdgeInsets.only(left: 50.0, right: 50, top: 10.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    context.watch<MainApi>().statistics.leadChanges![0] ?? '',
+                                    style: const TextStyle(fontSize: 16, color: whiteColor),),
+                                  Container(
+                                    padding: const EdgeInsets.only(bottom: 10),
+                                    decoration: const BoxDecoration(
+                                        border: Border(
+                                            bottom: BorderSide(
+                                                color: primaryLightColor, width: 2
+                                            )
+                                        )
+                                    ),
+                                    child: const Text('Lead changes', style: TextStyle(fontSize: 16, color: whiteColor)),
+                                  ),
+                                  Text(
+                                    context.watch<MainApi>().statistics.leadChanges![1] ?? '',
+                                    style: const TextStyle(fontSize: 16, color: whiteColor),),
+                                ],
+                              ),
+                            ),
+
+
+                            Padding(
+                              padding: const EdgeInsets.only(left: 50.0, right: 50, top: 10.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    context.watch<MainApi>().statistics.maxPointsInARow![0] ?? '',
+                                    style: const TextStyle(fontSize: 16, color: whiteColor),),
+                                  Container(
+                                    padding: const EdgeInsets.only(bottom: 10),
+                                    decoration: const BoxDecoration(
+                                        border: Border(
+                                            bottom: BorderSide(
+                                                color: primaryLightColor, width: 2
+                                            )
+                                        )
+                                    ),
+                                    child: const Text('Maxpoints in a row', style: TextStyle(fontSize: 16, color: whiteColor)),
+                                  ),
+                                  Text(
+                                    context.watch<MainApi>().statistics.maxPointsInARow![1] ?? '',
+                                    style: const TextStyle(fontSize: 16, color: whiteColor),),
+                                ],
+                              ),
+                            ),
+
+
+                            Padding(
+                              padding: const EdgeInsets.only(left: 50.0, right: 50, top: 10.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    context.watch<MainApi>().statistics.possession![0] ?? '',
+                                    style: const TextStyle(fontSize: 16, color: whiteColor),),
+                                  Container(
+                                    padding: const EdgeInsets.only(bottom: 10),
+                                    decoration: const BoxDecoration(
+                                        border: Border(
+                                            bottom: BorderSide(
+                                                color: primaryLightColor, width: 2
+                                            )
+                                        )
+                                    ),
+                                    child: const Text('Possession', style: TextStyle(fontSize: 16, color: whiteColor)),
+                                  ),
+                                  Text(
+                                    context.watch<MainApi>().statistics.possession![1] ?? '',
+                                    style: const TextStyle(fontSize: 16, color: whiteColor),),
+                                ],
+                              ),
+                            ),
+
+
+
+                            Padding(
+                              padding: const EdgeInsets.only(left: 50.0, right: 50, top: 10.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    context.watch<MainApi>().statistics.timeSpentInLead![0] ?? '',
+                                    style: const TextStyle(fontSize: 16, color: whiteColor),),
+                                  Container(
+                                    padding: const EdgeInsets.only(bottom: 10),
+                                    decoration: const BoxDecoration(
+                                        border: Border(
+                                            bottom: BorderSide(
+                                                color: primaryLightColor, width: 2
+                                            )
+                                        )
+                                    ),
+                                    child: const Text('Time spent in lead', style: TextStyle(fontSize: 16, color: whiteColor)),
+                                  ),
+                                  Text(
+                                    context.watch<MainApi>().statistics.timeSpentInLead![1] ?? '',
+                                    style: const TextStyle(fontSize: 16, color: whiteColor),),
+                                ],
+                              ),
+                            ),
+
 
                             Padding(
                               padding: const EdgeInsets.only(left: 50.0, right: 50, top: 10.0),

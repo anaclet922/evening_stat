@@ -3,9 +3,11 @@ import 'package:evening_stat/components/position/home.dart';
 import 'package:evening_stat/components/schedule/home.dart';
 import 'package:evening_stat/components/option/home.dart';
 import 'package:evening_stat/components/info/home.dart';
+// import 'package:evening_stat/providers/main_api_provider.dart';
 import 'package:evening_stat/providers/saved_data_provider.dart';
 import 'package:evening_stat/utilis/constants.dart';
 import 'package:flutter/cupertino.dart';
+// import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
@@ -54,14 +56,15 @@ class _HomeState extends State<Home>  with WidgetsBindingObserver {
           }
         }
     );
-    WidgetsBinding.instance?.addObserver(this);
+
+    WidgetsBinding.instance.addObserver(this);
     super.initState();
   }
 
 
   @override
   void dispose() {
-    WidgetsBinding.instance?.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -114,11 +117,6 @@ class _HomeState extends State<Home>  with WidgetsBindingObserver {
       tabBuilder: (BuildContext context, int index) {
         return CupertinoTabView(
           builder: (BuildContext context) {
-            // if(navBtn == 2 && index == 0){
-            //   return tabs[4];
-            // }else if(navBtn == 2 && index == 1){
-            //   return tabs[5];
-            // }
             return tabs[index];
           },
         );

@@ -35,35 +35,35 @@ class _PositionMainState extends State<PositionMain>
     LeagueModel(id: 1542, leagueName: 'Russia Premier League Women'),
   ];
 
-  late LeagueModel selectedLeague;
+  // late LeagueModel selectedLeague;
 
   bool miniInfo = true;
 
-  void initVars() {
-    if (Provider.of<SaveData>(context, listen: false).leagueSaved > 14) {
-      for (int i = 0; i < leagueItems.length; i++) {
-        if (leagueItems[i].id ==
-            Provider.of<SaveData>(context, listen: false).leagueSaved) {
-          selectedLeague = leagueItems[i];
-          break;
-        }
-      }
-    } else {
-      selectedLeague = leagueItems[
-          Provider.of<SaveData>(context, listen: false).leagueSaved];
-    }
-  }
+  // void initVars() {
+  //   if (Provider.of<SaveData>(context, listen: false).leagueSaved > 14) {
+  //     for (int i = 0; i < leagueItems.length; i++) {
+  //       if (leagueItems[i].id ==
+  //           Provider.of<SaveData>(context, listen: false).leagueSaved) {
+  //         selectedLeague = leagueItems[i];
+  //         break;
+  //       }
+  //     }
+  //   } else {
+  //     selectedLeague = leagueItems[
+  //         Provider.of<SaveData>(context, listen: false).leagueSaved];
+  //   }
+  // }
 
   @override
   void initState() {
-    WidgetsBinding.instance?.addObserver(this);
-    initVars();
+    WidgetsBinding.instance.addObserver(this);
+    // initVars();
     super.initState();
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance?.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -82,7 +82,7 @@ class _PositionMainState extends State<PositionMain>
   }
 
   Widget position(BuildContext context) {
-    // print(context.watch<MainApi>().positions.length);
+
     return Scaffold(
         backgroundColor: primaryColor,
         appBar: AppBar(
@@ -108,8 +108,8 @@ class _PositionMainState extends State<PositionMain>
                     Icons.keyboard_arrow_down,
                     color: whiteColor,
                   ),
-                  value: selectedLeague,
-                  items: leagueItems.map((LeagueModel value) {
+                  value: context.watch<SaveData>().selectedLeague,
+                  items: context.read<SaveData>().leagueItems.map((LeagueModel value) {
                     return DropdownMenuItem(
                         // alignment: AlignmentDirectional.bottomCenter,
                         value: value,
@@ -120,15 +120,19 @@ class _PositionMainState extends State<PositionMain>
                   }).toList(),
                   onChanged: (LeagueModel? newValue) {
                     context.read<MySound>().btnPressedSound();
-                    setState(() {
-                      selectedLeague = newValue!;
-                    });
+                    // setState(() {
+                    //   selectedLeague = newValue!;
+                    // });
+                    context.read<SaveData>().changeSelectedLeague(newValue!);
                     // print(selectedLeague.id);
                     EasyLoading.show(status: 'loading...');
                     context
                         .read<MainApi>()
-                        .getLeaguePosition(context, selectedLeague.id);
-                    print('position: league changed');
+                        .getLeaguePosition(context, newValue!.id);
+                    context
+                        .read<MainApi>()
+                        .getSchedules(newValue!.id);
+                    // print('position: league changed');
                   },
                   underline: const SizedBox(),
                 ),
@@ -150,7 +154,7 @@ class _PositionMainState extends State<PositionMain>
                           context.read<MySound>().btnPressedSound();
                         },
                         child: Container(
-                          margin: const EdgeInsets.all(20),
+                          margin: const EdgeInsets.only(bottom: 10, right: 20, top: 10),
                           padding: const EdgeInsets.only(left: 2, right: 2),
                           width: 30,
                           height: 30,
@@ -167,248 +171,262 @@ class _PositionMainState extends State<PositionMain>
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                    child: Table(
-                      // if (miniInfo)
-                      columnWidths: const {
-                        0: FlexColumnWidth(2),
-                        1: FlexColumnWidth(1),
-                        2: FlexColumnWidth(1),
-                        3: FlexColumnWidth(1),
-                        4: FlexColumnWidth(1),
-                      },
-                      border:
-                          TableBorder.all(color: primaryLightColor, width: 2),
+                    child: Column(
                       children: [
-                        TableRow(
-                            decoration:
-                                const BoxDecoration(color: primaryColor),
-                            children: [
-                              const Center(
-                                  child: Padding(
-                                padding:
-                                    EdgeInsets.only(top: 14.0, bottom: 14.0),
-                                child: Text('Team',
-                                    overflow: TextOverflow.fade,
-                                    style: TextStyle(
-                                        color: whiteColor, fontSize: 16)),
-                              )),
-                              const Center(
-                                  child: Padding(
-                                padding:
-                                    EdgeInsets.only(top: 14.0, bottom: 14.0),
-                                child: Text('P',
-                                    style: TextStyle(
-                                        color: whiteColor, fontSize: 12)),
-                              )),
-                              const Center(
-                                child: Padding(
-                                  padding:
-                                      EdgeInsets.only(top: 14.0, bottom: 14.0),
-                                  child: Text('W',
-                                      style: TextStyle(
-                                          color: whiteColor, fontSize: 12)),
-                                ),
-                              ),
-                              const Center(
-                                child: Padding(
-                                  padding:
-                                      EdgeInsets.only(top: 14.0, bottom: 14.0),
-                                  child: Text('L',
-                                      style: TextStyle(
-                                          color: whiteColor, fontSize: 12)),
-                                ),
-                              ),
-                              if (!miniInfo)
-                                const Center(
-                                  child: Padding(
-                                    padding: EdgeInsets.only(
-                                        top: 14.0, bottom: 14.0),
-                                    child: Text('G+',
-                                        style: TextStyle(
-                                            color: whiteColor, fontSize: 12)),
-                                  ),
-                                ),
-                              if (!miniInfo)
-                                const Center(
-                                  child: Padding(
-                                    padding: EdgeInsets.only(
-                                        top: 14.0, bottom: 14.0),
-                                    child: Text('G-',
-                                        style: TextStyle(
-                                            color: whiteColor, fontSize: 12)),
-                                  ),
-                                ),
-                              const Center(
-                                child: Padding(
-                                  padding:
-                                      EdgeInsets.only(top: 14.0, bottom: 14.0),
-                                  child: Text('Score',
-                                      style: TextStyle(
-                                          color: whiteColor, fontSize: 12)),
-                                ),
-                              ),
-                              if (!miniInfo)
-                                const Center(
-                                  child: Padding(
-                                    padding: EdgeInsets.only(
-                                        top: 14.0, bottom: 14.0),
-                                    child: Text('pct(%)',
-                                        style: TextStyle(
-                                            color: whiteColor, fontSize: 12)),
-                                  ),
-                                ),
-                              if (!miniInfo)
-                                const Center(
-                                  child: Padding(
-                                    padding: EdgeInsets.only(
-                                        top: 14.0, bottom: 14.0),
-                                    child: Text('G+/-',
-                                        style: TextStyle(
-                                            color: whiteColor, fontSize: 12)),
-                                  ),
-                                ),
-                              if (!miniInfo)
-                                const Center(
-                                  child: Padding(
-                                    padding: EdgeInsets.only(
-                                        top: 14.0, bottom: 14.0),
-                                    child: Text('%G+/-',
-                                        style: TextStyle(
-                                            color: whiteColor, fontSize: 12)),
-                                  ),
-                                ),
-                            ]),
-                        for (var row in context.watch<MainApi>().positions)
-                          TableRow(children: [
-                            Container(
-                              width: 120,
-                              padding: const EdgeInsets.only(left: 7.0, top: 5),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Image.network(
-                                    row.teamImage,
-                                    width: 30,
-                                    errorBuilder: (BuildContext context,
-                                        Object exception,
-                                        StackTrace? stackTrace) {
-                                      return const Text('ð¢');
-                                    },
-                                  ),
-                                  if (miniInfo)
-                                    Text(
-                                      row.teamName,
-                                      textAlign: TextAlign.center,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                          color: Colors.white, fontSize: 12),
-                                    )
-                                ],
+
+                        for (var round in context.watch<MainApi>().positions)
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(5.0),
+                              child: Text(
+                                  round.groupName,
+                                 style: const TextStyle(
+                                   color: whiteColor,
+                                   fontWeight: FontWeight.bold
+                                 ),
                               ),
                             ),
-                            Center(
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 14.0, bottom: 14.0),
-                                child: Text(
-                                  row.position.toString(),
-                                  style: const TextStyle(
-                                      color: whiteColor, fontSize: 12),
-                                ),
-                              ),
+                            Table(
+                              border:
+                                  TableBorder.all(color: primaryLightColor, width: 2),
+                              children: [
+                                TableRow(
+                                    decoration:
+                                        const BoxDecoration(color: primaryColor),
+                                    children: [
+                                      const Center(
+                                          child: Padding(
+                                        padding:
+                                            EdgeInsets.only(top: 14.0, bottom: 14.0),
+                                        child: Text('Team',
+                                            overflow: TextOverflow.fade,
+                                            style: TextStyle(
+                                                color: whiteColor, fontSize: 12)),
+                                      )),
+                                      const Center(
+                                          child: Padding(
+                                        padding:
+                                            EdgeInsets.only(top: 14.0, bottom: 14.0),
+                                        child: Text('P',
+                                            style: TextStyle(
+                                                color: whiteColor, fontSize: 12)),
+                                      )),
+                                      const Center(
+                                        child: Padding(
+                                          padding:
+                                              EdgeInsets.only(top: 14.0, bottom: 14.0),
+                                          child: Text('W',
+                                              style: TextStyle(
+                                                  color: whiteColor, fontSize: 12)),
+                                        ),
+                                      ),
+                                      const Center(
+                                        child: Padding(
+                                          padding:
+                                              EdgeInsets.only(top: 14.0, bottom: 14.0),
+                                          child: Text('L',
+                                              style: TextStyle(
+                                                  color: whiteColor, fontSize: 12)),
+                                        ),
+                                      ),
+                                      if (!miniInfo)
+                                        const Center(
+                                          child: Padding(
+                                            padding: EdgeInsets.only(
+                                                top: 14.0, bottom: 14.0),
+                                            child: Text('G+',
+                                                style: TextStyle(
+                                                    color: whiteColor, fontSize: 12)),
+                                          ),
+                                        ),
+                                      if (!miniInfo)
+                                        const Center(
+                                          child: Padding(
+                                            padding: EdgeInsets.only(
+                                                top: 14.0, bottom: 14.0),
+                                            child: Text('G-',
+                                                style: TextStyle(
+                                                    color: whiteColor, fontSize: 12)),
+                                          ),
+                                        ),
+                                      const Center(
+                                        child: Padding(
+                                          padding:
+                                              EdgeInsets.only(top: 14.0, bottom: 14.0),
+                                          child: Text('Score',
+                                              style: TextStyle(
+                                                  color: whiteColor, fontSize: 12)),
+                                        ),
+                                      ),
+                                      if (!miniInfo)
+                                        const Center(
+                                          child: Padding(
+                                            padding: EdgeInsets.only(
+                                                top: 14.0, bottom: 14.0),
+                                            child: Text('pct(%)',
+                                                style: TextStyle(
+                                                    color: whiteColor, fontSize: 12)),
+                                          ),
+                                        ),
+                                      if (!miniInfo)
+                                        const Center(
+                                          child: Padding(
+                                            padding: EdgeInsets.only(
+                                                top: 14.0, bottom: 14.0),
+                                            child: Text('G+/-',
+                                                style: TextStyle(
+                                                    color: whiteColor, fontSize: 12)),
+                                          ),
+                                        ),
+                                      if (!miniInfo)
+                                        const Center(
+                                          child: Padding(
+                                            padding: EdgeInsets.only(
+                                                top: 14.0, bottom: 14.0),
+                                            child: Text('%G+/-',
+                                                style: TextStyle(
+                                                    color: whiteColor, fontSize: 12)),
+                                          ),
+                                        ),
+                                    ]),
+                                for (var row in round.rows)
+                                  TableRow(children: [
+                                    Container(
+                                      width: 120,
+                                      padding: const EdgeInsets.all(7.0),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [
+                                          Image.network(
+                                            row.teamImage,
+                                            width: 30,
+                                            errorBuilder: (BuildContext context,
+                                                Object exception,
+                                                StackTrace? stackTrace) {
+                                              return Image.asset('assets/ball.png', width: 30,);
+                                            },
+                                          ),
+                                          if (miniInfo)
+                                            Text(
+                                              row.teamName,
+                                              textAlign: TextAlign.center,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: const TextStyle(
+                                                  color: Colors.white, fontSize: 10),
+                                            )
+                                        ],
+                                      ),
+                                    ),
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 14.0, bottom: 14.0),
+                                        child: Text(
+                                          row.position.toString(),
+                                          style: const TextStyle(
+                                              color: whiteColor, fontSize: 12),
+                                        ),
+                                      ),
+                                    ),
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 14.0, bottom: 14.0),
+                                        child: Text(
+                                          row.win.toString(),
+                                          style: const TextStyle(
+                                              color: whiteColor, fontSize: 12),
+                                        ),
+                                      ),
+                                    ),
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 14.0, bottom: 14.0),
+                                        child: Text(
+                                          row.loss.toString(),
+                                          style: const TextStyle(
+                                              color: whiteColor, fontSize: 12),
+                                        ),
+                                      ),
+                                    ),
+                                    if (!miniInfo)
+                                      Center(
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              top: 14.0, bottom: 14.0),
+                                          child: Text(
+                                            row.goalsPlus.toString(),
+                                            style: const TextStyle(
+                                                color: whiteColor, fontSize: 12),
+                                          ),
+                                        ),
+                                      ),
+                                    if (!miniInfo)
+                                      Center(
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              top: 14.0, bottom: 14.0),
+                                          child: Text(
+                                            row.goalsMinus.toString(),
+                                            style: const TextStyle(
+                                                color: whiteColor, fontSize: 12),
+                                          ),
+                                        ),
+                                      ),
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 14.0, bottom: 14.0),
+                                        child: Text(
+                                          row.score.toString(),
+                                          style: const TextStyle(
+                                              color: whiteColor, fontSize: 12),
+                                        ),
+                                      ),
+                                    ),
+                                    if (!miniInfo)
+                                      Center(
+                                          child: Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 14.0, bottom: 14.0),
+                                        child: Text(
+                                          row.pct.toString(),
+                                          style: const TextStyle(
+                                              color: whiteColor, fontSize: 12),
+                                        ),
+                                      )),
+                                    if (!miniInfo)
+                                      Center(
+                                          child: Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 14.0, bottom: 14.0),
+                                        child: Text(
+                                          row.goalDiffTotal.toString(),
+                                          style: const TextStyle(
+                                              color: whiteColor, fontSize: 12),
+                                        ),
+                                      )),
+                                    if (!miniInfo)
+                                      Center(
+                                          child: Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 14.0, bottom: 14.0),
+                                        child: Text(
+                                          row.pctGoalsTotal.toString(),
+                                          style: const TextStyle(
+                                              color: whiteColor, fontSize: 12),
+                                        ),
+                                      )),
+                                  ])
+                              ],
                             ),
-                            Center(
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 14.0, bottom: 14.0),
-                                child: Text(
-                                  row.win.toString(),
-                                  style: const TextStyle(
-                                      color: whiteColor, fontSize: 12),
-                                ),
-                              ),
-                            ),
-                            Center(
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 14.0, bottom: 14.0),
-                                child: Text(
-                                  row.loss.toString(),
-                                  style: const TextStyle(
-                                      color: whiteColor, fontSize: 12),
-                                ),
-                              ),
-                            ),
-                            if (!miniInfo)
-                              Center(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 14.0, bottom: 14.0),
-                                  child: Text(
-                                    row.goalsPlus.toString(),
-                                    style: const TextStyle(
-                                        color: whiteColor, fontSize: 12),
-                                  ),
-                                ),
-                              ),
-                            if (!miniInfo)
-                              Center(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 14.0, bottom: 14.0),
-                                  child: Text(
-                                    row.goalsMinus.toString(),
-                                    style: const TextStyle(
-                                        color: whiteColor, fontSize: 12),
-                                  ),
-                                ),
-                              ),
-                            Center(
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 14.0, bottom: 14.0),
-                                child: Text(
-                                  row.score.toString(),
-                                  style: const TextStyle(
-                                      color: whiteColor, fontSize: 12),
-                                ),
-                              ),
-                            ),
-                            if (!miniInfo)
-                              Center(
-                                  child: Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 14.0, bottom: 14.0),
-                                child: Text(
-                                  row.pct.toString(),
-                                  style: const TextStyle(
-                                      color: whiteColor, fontSize: 12),
-                                ),
-                              )),
-                            if (!miniInfo)
-                              Center(
-                                  child: Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 14.0, bottom: 14.0),
-                                child: Text(
-                                  row.goalDiffTotal.toString(),
-                                  style: const TextStyle(
-                                      color: whiteColor, fontSize: 12),
-                                ),
-                              )),
-                            if (!miniInfo)
-                              Center(
-                                  child: Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 14.0, bottom: 14.0),
-                                child: Text(
-                                  row.pctGoalsTotal.toString(),
-                                  style: const TextStyle(
-                                      color: whiteColor, fontSize: 12),
-                                ),
-                              )),
-                          ])
+                          ],
+                        ),
                       ],
                     ),
                   )
@@ -418,6 +436,7 @@ class _PositionMainState extends State<PositionMain>
   }
 
   Widget over(BuildContext context) {
+
     return Scaffold(
         backgroundColor: primaryColor,
         appBar: AppBar(
@@ -446,8 +465,8 @@ class _PositionMainState extends State<PositionMain>
                       Icons.keyboard_arrow_down,
                       color: whiteColor,
                     ),
-                    value: selectedLeague,
-                    items: leagueItems.map((LeagueModel value) {
+                    value:  context.watch<SaveData>().selectedLeague,
+                    items: context.read<SaveData>().leagueItems.map((LeagueModel value) {
                       return DropdownMenuItem(
                           // alignment: AlignmentDirectional.bottomCenter,
                           value: value,
@@ -459,10 +478,11 @@ class _PositionMainState extends State<PositionMain>
                     onChanged: (LeagueModel? newValue) {
                       context.read<MySound>().btnPressedSound();
                       EasyLoading.show(status: 'loading...');
-                      context.read<MainApi>().getOvers(selectedLeague.id);
-                      setState(() {
-                        selectedLeague = newValue!;
-                      });
+                      context.read<MainApi>().getOvers(newValue!.id);
+                      // setState(() {
+                      //   selectedLeague = newValue!;
+                      // });
+                      context.read<SaveData>().changeSelectedLeague(newValue!);
                     },
                     underline: const SizedBox(),
                   ),
